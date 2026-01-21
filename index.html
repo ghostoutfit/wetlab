@@ -278,7 +278,7 @@
             font-weight: 700;
             font-size: 22px;
             color: #ffffff;
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             line-height: 1.4;
             margin: 10px 0 5px 0;
         }
@@ -442,38 +442,113 @@
         <div id="entriesContainer" class="entries-list"></div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <script>
+        // Firebase Configuration
+        // IMPORTANT: Replace this with your own Firebase project config
+        // Get it from: Firebase Console > Project Settings > General > Your apps > SDK setup and configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummy-REPLACE-THIS-WITH-YOUR-API-KEY",
+            authDomain: "your-project.firebaseapp.com",
+            databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+            projectId: "your-project",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123def456"
+        };
+
+        // Initialize Firebase
+        let db = null;
+        let firebaseInitialized = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            firebaseInitialized = true;
+            console.log('Firebase initialized successfully');
+        } catch (error) {
+            console.error('Firebase initialization failed:', error);
+            console.log('Falling back to localStorage only');
+        }
+
         // Google Sheet CSV URL
         const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR77LLOhSqJaEE3fvG35AMB1EUmAlb2r4bzEQA8YVf5IpX_orSDqzjX-LzSgxaCUDUrVh5hjoJH1TVe/pub?output=csv';
 
         let allEntries = [];
         let filteredEntries = [];
-        let upvotes = {};
+        let globalUpvotes = {}; // Shared upvote counts from Firebase
+        let myUpvotes = {}; // This user's upvotes (localStorage)
 
-        // Load upvotes from localStorage
-        function loadUpvotes() {
-            const stored = localStorage.getItem('wetlab_upvotes');
-            upvotes = stored ? JSON.parse(stored) : {};
+        // Load this user's upvotes from localStorage
+        function loadMyUpvotes() {
+            const stored = localStorage.getItem('wetlab_my_upvotes');
+            myUpvotes = stored ? JSON.parse(stored) : {};
         }
 
-        // Save upvotes to localStorage
-        function saveUpvotes() {
-            localStorage.setItem('wetlab_upvotes', JSON.stringify(upvotes));
+        // Save this user's upvotes to localStorage
+        function saveMyUpvotes() {
+            localStorage.setItem('wetlab_my_upvotes', JSON.stringify(myUpvotes));
         }
 
-        // Get upvote count for an entry
+        // Load global upvote counts from Firebase
+        function loadGlobalUpvotes() {
+            if (!firebaseInitialized) {
+                // Fallback: use localStorage for counts too
+                const stored = localStorage.getItem('wetlab_global_upvotes');
+                globalUpvotes = stored ? JSON.parse(stored) : {};
+                return;
+            }
+
+            const upvotesRef = db.ref('upvotes');
+            upvotesRef.on('value', (snapshot) => {
+                globalUpvotes = snapshot.val() || {};
+                applyFilters(); // Re-render when counts change
+            });
+        }
+
+        // Get upvote count for an entry (from global counts)
         function getUpvoteCount(entryId) {
-            return upvotes[entryId] || 0;
+            return globalUpvotes[entryId] || 0;
+        }
+
+        // Check if current user has upvoted
+        function hasUserUpvoted(entryId) {
+            return myUpvotes[entryId] === true;
         }
 
         // Toggle upvote for an entry
         function toggleUpvote(entryId) {
-            if (upvotes[entryId]) {
-                delete upvotes[entryId];
+            const currentlyUpvoted = hasUserUpvoted(entryId);
+            const currentCount = getUpvoteCount(entryId);
+
+            if (currentlyUpvoted) {
+                // Remove upvote
+                delete myUpvotes[entryId];
+                const newCount = Math.max(0, currentCount - 1);
+
+                if (firebaseInitialized) {
+                    db.ref('upvotes/' + entryId).set(newCount || null);
+                } else {
+                    globalUpvotes[entryId] = newCount;
+                    localStorage.setItem('wetlab_global_upvotes', JSON.stringify(globalUpvotes));
+                }
             } else {
-                upvotes[entryId] = 1;
+                // Add upvote
+                myUpvotes[entryId] = true;
+                const newCount = currentCount + 1;
+
+                if (firebaseInitialized) {
+                    db.ref('upvotes/' + entryId).set(newCount);
+                } else {
+                    globalUpvotes[entryId] = newCount;
+                    localStorage.setItem('wetlab_global_upvotes', JSON.stringify(globalUpvotes));
+                }
             }
-            saveUpvotes();
+
+            saveMyUpvotes();
             applyFilters(); // Re-render to update display
         }
 
@@ -705,7 +780,7 @@
                 const videoId = getYouTubeId(youtubeLink);
                 const categories = (entry['Category'] || '').split(',').map(c => c.trim());
                 const entryId = entry._id;
-                const isUpvoted = upvotes[entryId] ? true : false;
+                const isUpvoted = hasUserUpvoted(entryId);
                 const upvoteCount = getUpvoteCount(entryId);
 
                 return `
@@ -756,8 +831,10 @@
         // Update statistics
         function updateStats() {
             const stats = document.getElementById('stats');
-            const totalUpvotes = Object.keys(upvotes).length;
-            stats.innerHTML = `⚡ Showing <strong>${filteredEntries.length}</strong> of <strong>${allEntries.length}</strong> experiments | ★ <strong>${totalUpvotes}</strong> upvoted`;
+            // Calculate total upvotes across all experiments
+            const totalUpvotes = Object.values(globalUpvotes).reduce((sum, count) => sum + count, 0);
+            const myUpvoteCount = Object.keys(myUpvotes).length;
+            stats.innerHTML = `⚡ Showing <strong>${filteredEntries.length}</strong> of <strong>${allEntries.length}</strong> experiments | ★ <strong>${totalUpvotes}</strong> total upvotes | ⭐ You upvoted <strong>${myUpvoteCount}</strong>`;
         }
 
         // Event listeners
@@ -769,7 +846,8 @@
         document.getElementById('refreshBtn').addEventListener('click', fetchData);
 
         // Initial load
-        loadUpvotes();
+        loadMyUpvotes();
+        loadGlobalUpvotes();
         fetchData();
     </script>
 </body>
