@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wetlab Database</title>
+    <title>Wetlab Experiments Database</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,33 +15,56 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1429 100%);
+            background-attachment: fixed;
             padding: 20px;
             line-height: 1.6;
+            color: #e0e0e0;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            background: white;
+            background: rgba(15, 20, 35, 0.85);
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1), 0 0 80px rgba(255, 0, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
         }
 
         h1 {
-            color: #333;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 3em;
+            background: linear-gradient(135deg, #00ffff 0%, #ff00ff 50%, #00ffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 30px;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.5)); }
         }
 
         .controls {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 30px;
             flex-wrap: wrap;
-            align-items: center;
+            align-items: flex-end;
+            background: rgba(10, 15, 30, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
         }
 
         .control-group {
@@ -49,120 +75,214 @@
 
         label {
             font-weight: 600;
-            font-size: 14px;
-            color: #555;
+            font-size: 13px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         select, input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 10px 14px;
+            background: rgba(20, 30, 50, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 6px;
             font-size: 14px;
-            min-width: 200px;
+            font-family: 'Rajdhani', sans-serif;
+            min-width: 180px;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        select:hover, input[type="text"]:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+        }
+
+        select option {
+            background: #1a2040;
+            color: #e0e0e0;
         }
 
         button {
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #0a0e27;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 600;
-            transition: background 0.2s;
+            font-weight: 700;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
         }
 
         button:hover {
-            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         button:disabled {
-            background: #ccc;
+            background: #333;
+            color: #666;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         .stats {
             margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #666;
+            padding: 15px 20px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #00ffff;
+            border-left: 4px solid #00ffff;
         }
 
-        .entries-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+        .entries-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
             margin-top: 20px;
         }
 
-        .entry-card {
-            border: 1px solid #e0e0e0;
+        .entry-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 300px 120px;
+            gap: 20px;
+            align-items: center;
+            background: rgba(20, 30, 50, 0.6);
+            padding: 20px;
             border-radius: 8px;
-            padding: 15px;
-            background: white;
-            transition: box-shadow 0.2s;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .entry-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        .entry-row:hover {
+            background: rgba(30, 40, 60, 0.8);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .entry-upvote {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .upvote-btn {
+            background: rgba(255, 0, 255, 0.2);
+            border: 2px solid rgba(255, 0, 255, 0.5);
+            color: #ff00ff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .upvote-btn:hover {
+            background: rgba(255, 0, 255, 0.4);
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .upvote-btn.upvoted {
+            background: linear-gradient(135deg, #ff00ff 0%, #ff0080 100%);
+            border-color: #ff00ff;
+            color: white;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+        }
+
+        .upvote-count {
+            font-weight: 700;
+            color: #ff00ff;
+            font-size: 16px;
+        }
+
+        .entry-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .entry-header {
-            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
         }
 
         .entry-category {
             display: inline-block;
-            background: #007bff;
-            color: white;
-            padding: 4px 10px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(0, 200, 255, 0.3));
+            color: #00ffff;
+            padding: 4px 12px;
             border-radius: 12px;
             font-size: 12px;
-            font-weight: 600;
-            margin-right: 5px;
-            margin-bottom: 5px;
+            font-weight: 700;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .entry-type {
             display: inline-block;
-            background: #28a745;
-            color: white;
-            padding: 4px 10px;
+            background: linear-gradient(135deg, rgba(0, 255, 128, 0.3), rgba(0, 200, 100, 0.3));
+            color: #00ff80;
+            padding: 4px 12px;
             border-radius: 12px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            border: 1px solid rgba(0, 255, 128, 0.5);
+            text-transform: uppercase;
         }
 
         .entry-specific {
-            font-weight: 600;
-            color: #333;
-            margin: 10px 0 5px 0;
-            font-size: 16px;
+            font-weight: 700;
+            font-size: 20px;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
         }
 
         .entry-description {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
+            color: #b0b0b0;
+            font-size: 15px;
+            line-height: 1.5;
         }
 
-        .entry-video {
-            margin-top: 15px;
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
+        .entry-video-container {
+            width: 300px;
+            height: 169px;
+            border-radius: 6px;
             overflow: hidden;
-            border-radius: 4px;
+            border: 2px solid rgba(255, 0, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
         }
 
-        .entry-video iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .entry-video-container iframe {
             width: 100%;
             height: 100%;
             border: 0;
@@ -170,37 +290,90 @@
 
         .entry-meta {
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #888;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 13px;
+            min-width: 120px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #8888ff;
+        }
+
+        .safety-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 200, 0, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 200, 0, 0.5);
+            color: #ffcc00;
+            font-weight: 700;
         }
 
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #666;
+            padding: 60px;
+            color: #00ffff;
+            font-size: 20px;
+            font-weight: 600;
         }
 
         .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 4px;
+            background: rgba(255, 0, 100, 0.2);
+            color: #ff0080;
+            padding: 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
+            border: 1px solid rgba(255, 0, 100, 0.5);
+            font-weight: 600;
         }
 
         .no-results {
             text-align: center;
-            padding: 40px;
-            color: #999;
-            font-size: 18px;
+            padding: 60px;
+            color: #666;
+            font-size: 20px;
         }
 
-        .sort-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        @media (max-width: 1200px) {
+            .entry-row {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .entry-video-container {
+                grid-column: 2;
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .entry-meta {
+                grid-column: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .entry-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .entry-upvote {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .entry-video-container {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -210,36 +383,37 @@
 
         <div class="controls">
             <div class="control-group">
-                <label for="categoryFilter">Filter by Category:</label>
+                <label for="categoryFilter">Category:</label>
                 <select id="categoryFilter">
                     <option value="">All Categories</option>
                 </select>
             </div>
 
             <div class="control-group">
-                <label for="typeFilter">Filter by Type:</label>
+                <label for="typeFilter">Type:</label>
                 <select id="typeFilter">
                     <option value="">All Types</option>
                 </select>
             </div>
 
             <div class="control-group">
-                <label for="safetyFilter">Filter by Safety Level:</label>
+                <label for="safetyFilter">Safety:</label>
                 <select id="safetyFilter">
-                    <option value="">All Safety Levels</option>
+                    <option value="">All Levels</option>
                 </select>
             </div>
 
             <div class="control-group">
                 <label for="searchBox">Search:</label>
-                <input type="text" id="searchBox" placeholder="Search description or specific...">
+                <input type="text" id="searchBox" placeholder="Search...">
             </div>
 
             <div class="control-group">
                 <label for="sortBy">Sort by:</label>
                 <select id="sortBy">
+                    <option value="upvotes">Upvotes (Most)</option>
                     <option value="category">Category</option>
-                    <option value="specific">Specific</option>
+                    <option value="specific">Title</option>
                     <option value="type">Type</option>
                     <option value="safety">Safety Level</option>
                 </select>
@@ -247,15 +421,15 @@
 
             <div class="control-group">
                 <label>&nbsp;</label>
-                <button id="refreshBtn">🔄 Refresh Data</button>
+                <button id="refreshBtn">🔄 Refresh</button>
             </div>
         </div>
 
         <div class="stats" id="stats"></div>
 
         <div id="errorContainer"></div>
-        <div id="loadingContainer" class="loading">Loading data...</div>
-        <div id="entriesContainer" class="entries-grid"></div>
+        <div id="loadingContainer" class="loading">⚛️ Loading experiments...</div>
+        <div id="entriesContainer" class="entries-list"></div>
     </div>
 
     <script>
@@ -264,6 +438,34 @@
 
         let allEntries = [];
         let filteredEntries = [];
+        let upvotes = {};
+
+        // Load upvotes from localStorage
+        function loadUpvotes() {
+            const stored = localStorage.getItem('wetlab_upvotes');
+            upvotes = stored ? JSON.parse(stored) : {};
+        }
+
+        // Save upvotes to localStorage
+        function saveUpvotes() {
+            localStorage.setItem('wetlab_upvotes', JSON.stringify(upvotes));
+        }
+
+        // Get upvote count for an entry
+        function getUpvoteCount(entryId) {
+            return upvotes[entryId] || 0;
+        }
+
+        // Toggle upvote for an entry
+        function toggleUpvote(entryId) {
+            if (upvotes[entryId]) {
+                delete upvotes[entryId];
+            } else {
+                upvotes[entryId] = 1;
+            }
+            saveUpvotes();
+            applyFilters(); // Re-render to update display
+        }
 
         // Extract YouTube video ID from various URL formats
         function getYouTubeId(url) {
@@ -317,6 +519,8 @@
                 // Only include entries with YouTube links
                 const youtubeLink = entry['YouTube or Image Link'] || '';
                 if (youtubeLink && getYouTubeId(youtubeLink)) {
+                    // Use the ID Number column as the unique ID
+                    entry._id = (entry['ID Number (DON\'T CHANGE IT!)'] || '').trim();
                     entries.push(entry);
                 }
             }
@@ -446,6 +650,10 @@
                 let aVal, bVal;
 
                 switch(sortBy) {
+                    case 'upvotes':
+                        const aUpvotes = getUpvoteCount(a._id);
+                        const bUpvotes = getUpvoteCount(b._id);
+                        return bUpvotes - aUpvotes; // Descending order
                     case 'category':
                         aVal = a['Category'] || '';
                         bVal = b['Category'] || '';
@@ -478,7 +686,7 @@
             const container = document.getElementById('entriesContainer');
 
             if (filteredEntries.length === 0) {
-                container.innerHTML = '<div class="no-results">No experiments found matching your filters.</div>';
+                container.innerHTML = '<div class="no-results">⚗️ No experiments found matching your filters.</div>';
                 return;
             }
 
@@ -486,19 +694,34 @@
                 const youtubeLink = entry['YouTube or Image Link'] || '';
                 const videoId = getYouTubeId(youtubeLink);
                 const categories = (entry['Category'] || '').split(',').map(c => c.trim());
+                const entryId = entry._id;
+                const isUpvoted = upvotes[entryId] ? true : false;
+                const upvoteCount = getUpvoteCount(entryId);
 
                 return `
-                    <div class="entry-card">
-                        <div class="entry-header">
-                            ${categories.map(cat =>
-                                `<span class="entry-category">${cat}</span>`
-                            ).join('')}
-                            ${entry['Type'] ? `<span class="entry-type">${entry['Type']}</span>` : ''}
+                    <div class="entry-row">
+                        <div class="entry-upvote">
+                            <button class="upvote-btn ${isUpvoted ? 'upvoted' : ''}"
+                                    onclick="toggleUpvote('${entryId}')"
+                                    title="${isUpvoted ? 'Remove upvote' : 'Upvote this experiment'}">
+                                ${isUpvoted ? '★' : '☆'}
+                            </button>
+                            ${upvoteCount > 0 ? `<div class="upvote-count">${upvoteCount}</div>` : ''}
                         </div>
-                        <div class="entry-specific">${entry['Specific'] || 'Untitled'}</div>
-                        <div class="entry-description">${entry['Description'] || ''}</div>
+
+                        <div class="entry-info">
+                            <div class="entry-header">
+                                ${categories.map(cat =>
+                                    `<span class="entry-category">${cat}</span>`
+                                ).join('')}
+                                ${entry['Type'] ? `<span class="entry-type">${entry['Type']}</span>` : ''}
+                            </div>
+                            <div class="entry-specific">${entry['Specific'] || 'Untitled'}</div>
+                            <div class="entry-description">${entry['Description'] || ''}</div>
+                        </div>
+
                         ${videoId ? `
-                            <div class="entry-video">
+                            <div class="entry-video-container">
                                 <iframe
                                     src="https://www.youtube.com/embed/${videoId}"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -506,9 +729,14 @@
                                 </iframe>
                             </div>
                         ` : ''}
+
                         <div class="entry-meta">
-                            ${entry['Safety'] ? `<span>🛡️ Safety: Level ${entry['Safety']}</span>` : ''}
-                            ${entry['Example Phenomena'] ? `<span>📊 ${entry['Example Phenomena']}</span>` : ''}
+                            ${entry['Safety'] ? `
+                                <div class="safety-badge">
+                                    <span>🛡️</span>
+                                    <span>Level ${entry['Safety']}</span>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -518,7 +746,8 @@
         // Update statistics
         function updateStats() {
             const stats = document.getElementById('stats');
-            stats.textContent = `Showing ${filteredEntries.length} of ${allEntries.length} experiments with video demonstrations`;
+            const totalUpvotes = Object.keys(upvotes).length;
+            stats.innerHTML = `⚡ Showing <strong>${filteredEntries.length}</strong> of <strong>${allEntries.length}</strong> experiments | ★ <strong>${totalUpvotes}</strong> upvoted`;
         }
 
         // Event listeners
@@ -530,6 +759,7 @@
         document.getElementById('refreshBtn').addEventListener('click', fetchData);
 
         // Initial load
+        loadUpvotes();
         fetchData();
     </script>
 </body>
