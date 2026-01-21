@@ -783,6 +783,10 @@
                 const isUpvoted = hasUserUpvoted(entryId);
                 const upvoteCount = getUpvoteCount(entryId);
 
+                // Get start time from spreadsheet (in seconds)
+                const startTime = entry['Start Time (seconds)'] || '';
+                const startParam = startTime ? `&start=${startTime}` : '';
+
                 return `
                     <div class="entry-row">
                         <div class="entry-upvote">
@@ -807,7 +811,7 @@
                         ${videoId ? `
                             <div class="entry-video-container">
                                 <iframe
-                                    src="https://www.youtube.com/embed/${videoId}"
+                                    src="https://www.youtube.com/embed/${videoId}?mute=1${startParam}"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowfullscreen>
                                 </iframe>
