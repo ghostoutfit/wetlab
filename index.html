@@ -451,13 +451,14 @@
             localStorage.setItem('wetlab_upvotes', JSON.stringify(upvotes));
         }
 
-        // Generate unique ID for an entry based on Category + Specific
+        // Generate unique ID for an entry based on Category + Specific + Description
         // This ensures the ID remains stable even if other fields change
         function generateEntryId(entry) {
             const category = (entry['Category'] || '').trim();
             const specific = (entry['Specific'] || '').trim();
-            // Simple hash function to create a consistent ID
-            const str = `${category}|${specific}`;
+            const description = (entry['Description'] || '').trim();
+            // Create a consistent ID from these three fields
+            const str = `${category}|${specific}|${description}`;
             return btoa(str).replace(/[^a-zA-Z0-9]/g, '');
         }
 
