@@ -451,17 +451,6 @@
             localStorage.setItem('wetlab_upvotes', JSON.stringify(upvotes));
         }
 
-        // Generate unique ID for an entry based on Category + Specific + Description
-        // This ensures the ID remains stable even if other fields change
-        function generateEntryId(entry) {
-            const category = (entry['Category'] || '').trim();
-            const specific = (entry['Specific'] || '').trim();
-            const description = (entry['Description'] || '').trim();
-            // Create a consistent ID from these three fields
-            const str = `${category}|${specific}|${description}`;
-            return btoa(str).replace(/[^a-zA-Z0-9]/g, '');
-        }
-
         // Get upvote count for an entry
         function getUpvoteCount(entryId) {
             return upvotes[entryId] || 0;
@@ -530,8 +519,8 @@
                 // Only include entries with YouTube links
                 const youtubeLink = entry['YouTube or Image Link'] || '';
                 if (youtubeLink && getYouTubeId(youtubeLink)) {
-                    // Generate stable ID for the entry
-                    entry._id = generateEntryId(entry);
+                    // Use the ID Number column as the unique ID
+                    entry._id = (entry['ID Number (DON\'T CHANGE IT!)'] || '').trim();
                     entries.push(entry);
                 }
             }
