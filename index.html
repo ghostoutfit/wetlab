@@ -499,13 +499,26 @@
                 // Fallback: use localStorage for counts too
                 const stored = localStorage.getItem('wetlab_global_upvotes');
                 globalUpvotes = stored ? JSON.parse(stored) : {};
+                console.log('Using localStorage fallback for upvotes');
                 return;
             }
 
             const upvotesRef = db.ref('upvotes');
             upvotesRef.on('value', (snapshot) => {
                 globalUpvotes = snapshot.val() || {};
+                console.log('Firebase upvotes loaded:', Object.keys(globalUpvotes).length, 'entries');
                 applyFilters(); // Re-render when counts change
+            }, (error) => {
+                console.error('Firebase read error:', error);
+            });
+
+            // Test write access
+            db.ref('.info/connected').on('value', (snapshot) => {
+                if (snapshot.val() === true) {
+                    console.log('Firebase connected successfully');
+                } else {
+                    console.log('Firebase disconnected');
+                }
             });
         }
 
@@ -521,8 +534,15 @@
 
         // Toggle upvote for an entry
         function toggleUpvote(entryId) {
+            if (!entryId) {
+                console.error('Cannot upvote: invalid entry ID');
+                return;
+            }
+
             const currentlyUpvoted = hasUserUpvoted(entryId);
             const currentCount = getUpvoteCount(entryId);
+
+            console.log('Toggle upvote:', entryId, 'Currently upvoted:', currentlyUpvoted, 'Current count:', currentCount);
 
             if (currentlyUpvoted) {
                 // Remove upvote
@@ -530,7 +550,9 @@
                 const newCount = Math.max(0, currentCount - 1);
 
                 if (firebaseInitialized) {
-                    db.ref('upvotes/' + entryId).set(newCount || null);
+                    db.ref('upvotes/' + entryId).set(newCount || null).catch(err => {
+                        console.error('Firebase upvote removal failed:', err);
+                    });
                 } else {
                     globalUpvotes[entryId] = newCount;
                     localStorage.setItem('wetlab_global_upvotes', JSON.stringify(globalUpvotes));
@@ -541,7 +563,9 @@
                 const newCount = currentCount + 1;
 
                 if (firebaseInitialized) {
-                    db.ref('upvotes/' + entryId).set(newCount);
+                    db.ref('upvotes/' + entryId).set(newCount).catch(err => {
+                        console.error('Firebase upvote failed:', err);
+                    });
                 } else {
                     globalUpvotes[entryId] = newCount;
                     localStorage.setItem('wetlab_global_upvotes', JSON.stringify(globalUpvotes));
@@ -605,7 +629,18 @@
                 const youtubeLink = entry['YouTube or Image Link'] || '';
                 if (youtubeLink && getYouTubeId(youtubeLink)) {
                     // Use the ID Number column as the unique ID
-                    entry._id = (entry['ID Number (DON\'T CHANGE IT!)'] || '').trim();
+                    let idValue = (entry['ID Number (DON\'T CHANGE IT!)'] || '').trim();
+
+                    // Validate ID: Firebase keys can't contain . # $ [ ] or be empty
+                    if (!idValue) {
+                        console.warn('Missing ID for entry:', entry['Description']);
+                        idValue = 'missing_' + entries.length;
+                    }
+
+                    // Sanitize ID: replace invalid characters
+                    idValue = idValue.replace(/[\.\#\$\[\]\/]/g, '_');
+
+                    entry._id = idValue;
                     entries.push(entry);
                 }
             }
@@ -629,6 +664,9 @@
 
                 const csv = await response.text();
                 allEntries = parseCSV(csv);
+
+                console.log('Loaded entries:', allEntries.length);
+                console.log('Sample IDs:', allEntries.slice(0, 5).map(e => e._id));
 
                 populateFilters();
                 applyFilters();
