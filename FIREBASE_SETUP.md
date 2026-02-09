@@ -31,6 +31,15 @@ To enable shared upvotes across all users, you need to set up a Firebase Realtim
       "$entryId": {
         ".validate": "newData.isNumber() && newData.val() >= 0"
       }
+    },
+    "comments": {
+      ".read": true,
+      ".write": true,
+      "$entryId": {
+        "$commentId": {
+          ".validate": "newData.hasChildren(['category', 'text', 'timestamp', 'entryId', 'resolved'])"
+        }
+      }
     }
   }
 }
