@@ -292,12 +292,17 @@
             box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
         }
 
-        .entry-video-container iframe,
+        .entry-video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
         .entry-video-container img {
             width: 100%;
             height: 100%;
             border: 0;
-            object-fit: cover;
+            object-fit: contain;
         }
 
         .entry-meta {
@@ -350,6 +355,280 @@
             padding: 60px;
             color: #666;
             font-size: 20px;
+        }
+
+        /* Comment Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(15, 20, 35, 0.98);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            color: #00ffff;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #ff00ff;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 0, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .comment-form {
+            background: rgba(10, 15, 30, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ffff;
+            font-weight: 600;
+        }
+
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(20, 30, 50, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #0a0e27;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+        }
+
+        .comment-success {
+            background: rgba(0, 255, 128, 0.2);
+            border: 1px solid rgba(0, 255, 128, 0.5);
+            color: #00ff80;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .comment-success a {
+            color: #00ffff;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .comments-list {
+            margin-top: 30px;
+        }
+
+        .comments-list h3 {
+            color: #ff00ff;
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .comment-group {
+            margin-bottom: 30px;
+        }
+
+        .comment-group-title {
+            color: #00ffff;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .comment-item {
+            background: rgba(20, 30, 50, 0.6);
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #ff00ff;
+            margin-bottom: 15px;
+        }
+
+        .comment-item.comment-resolved {
+            opacity: 0.6;
+            border-left-color: #666;
+        }
+
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-category-tag {
+            background: rgba(255, 0, 255, 0.2);
+            color: #ff00ff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .comment-timestamp {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .comment-text {
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .comment-admin {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comment-admin input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .comment-admin label {
+            color: #ffcc00;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .admin-login {
+            background: rgba(255, 200, 0, 0.1);
+            border: 1px solid rgba(255, 200, 0, 0.3);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .admin-login input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(20, 30, 50, 0.8);
+            border: 1px solid rgba(255, 200, 0, 0.5);
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            margin-top: 8px;
+        }
+
+        .admin-status {
+            color: #00ff80;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .comments-btn {
+            background: rgba(255, 0, 255, 0.2);
+            border: 2px solid rgba(255, 0, 255, 0.5);
+            color: #ff00ff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .comments-btn:hover {
+            background: rgba(255, 0, 255, 0.4);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            transform: translateY(-1px);
         }
 
         @media (max-width: 1200px) {
@@ -442,6 +721,58 @@
         <div id="errorContainer"></div>
         <div id="loadingContainer" class="loading">⚛️ Loading experiments...</div>
         <div id="entriesContainer" class="entries-list"></div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div id="commentModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">💬 Comments</div>
+                <button class="modal-close" onclick="closeCommentModal()">×</button>
+            </div>
+
+            <div id="adminLoginSection" class="admin-login" style="display: none;">
+                <label>Admin Password:</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password">
+                <button onclick="checkAdminPassword()" style="margin-top: 10px; width: 100%;">Login as Admin</button>
+            </div>
+
+            <div id="adminStatus" class="admin-status" style="display: none;">
+                ✓ Logged in as Admin
+            </div>
+
+            <div class="comment-form">
+                <div id="commentSuccess" class="comment-success" style="display: none;"></div>
+
+                <form id="newCommentForm" onsubmit="submitComment(event)">
+                    <div class="form-group">
+                        <label for="commentCategory">What's this about? *</label>
+                        <select id="commentCategory" required>
+                            <option value="">Select a category...</option>
+                            <option value="General comment">General comment</option>
+                            <option value="Adjacent DCI">Adjacent DCI</option>
+                            <option value="Example Phenomena">Example Phenomena</option>
+                            <option value="Category">Category</option>
+                            <option value="Specific Category">Specific Category</option>
+                            <option value="Description">Description</option>
+                            <option value="Safety">Safety</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="commentText">Your comment *</label>
+                        <textarea id="commentText" required placeholder="Enter your comment..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Submit Comment</button>
+                </form>
+            </div>
+
+            <div class="comments-list">
+                <h3>Previous Comments</h3>
+                <div id="commentsList"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Firebase SDK -->
@@ -877,6 +1208,9 @@
                                     <span>Level ${entry['Safety']}</span>
                                 </div>
                             ` : ''}
+                            <button class="comments-btn" onclick="openCommentModal('${entryId}', '${(entry['Description'] || 'Untitled').replace(/'/g, "\\'")}')">
+                                💬 Comments
+                            </button>
                         </div>
                     </div>
                 `;
@@ -904,6 +1238,240 @@
         loadMyUpvotes();
         loadGlobalUpvotes();
         fetchData();
+
+        // ===== COMMENTING SYSTEM =====
+
+        // Admin password (change this to your desired password)
+        const ADMIN_PASSWORD = 'wetlab2024';
+        let isAdmin = false;
+        let currentCommentEntryId = null;
+        let currentCommentEntryName = null;
+
+        // Check admin status on load
+        if (localStorage.getItem('wetlab_admin') === 'true') {
+            isAdmin = true;
+        }
+
+        // Open comment modal
+        function openCommentModal(entryId, entryName) {
+            currentCommentEntryId = entryId;
+            currentCommentEntryName = entryName;
+
+            document.getElementById('commentModal').classList.add('active');
+            document.getElementById('commentSuccess').style.display = 'none';
+            document.getElementById('newCommentForm').reset();
+
+            // Show/hide admin controls
+            if (isAdmin) {
+                document.getElementById('adminStatus').style.display = 'block';
+                document.getElementById('adminLoginSection').style.display = 'none';
+            } else {
+                document.getElementById('adminStatus').style.display = 'none';
+                document.getElementById('adminLoginSection').style.display = 'block';
+            }
+
+            loadComments(entryId);
+        }
+
+        // Close comment modal
+        function closeCommentModal() {
+            document.getElementById('commentModal').classList.remove('active');
+            currentCommentEntryId = null;
+            currentCommentEntryName = null;
+        }
+
+        // Check admin password
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('wetlab_admin', 'true');
+                document.getElementById('adminStatus').style.display = 'block';
+                document.getElementById('adminLoginSection').style.display = 'none';
+                document.getElementById('adminPassword').value = '';
+                loadComments(currentCommentEntryId); // Reload to show admin controls
+            } else {
+                alert('Incorrect password');
+            }
+        }
+
+        // Submit comment
+        function submitComment(event) {
+            event.preventDefault();
+
+            if (!firebaseInitialized) {
+                alert('Comments require Firebase to be configured.');
+                return;
+            }
+
+            if (!currentCommentEntryId) {
+                alert('Error: No entry selected');
+                return;
+            }
+
+            const category = document.getElementById('commentCategory').value;
+            const text = document.getElementById('commentText').value;
+
+            if (!category || !text) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const comment = {
+                category: category,
+                text: text,
+                timestamp: Date.now(),
+                entryId: currentCommentEntryId,
+                resolved: false
+            };
+
+            // Save to Firebase
+            const commentRef = db.ref('comments/' + currentCommentEntryId).push();
+            commentRef.set(comment)
+                .then(() => {
+                    // Show success message
+                    const successDiv = document.getElementById('commentSuccess');
+                    successDiv.innerHTML = `
+                        ✓ Comment submitted!
+                        <a onclick="document.getElementById('commentSuccess').style.display='none'; document.getElementById('newCommentForm').reset();">
+                            Submit another comment for this entry?
+                        </a>
+                    `;
+                    successDiv.style.display = 'block';
+
+                    // Clear form
+                    document.getElementById('newCommentForm').reset();
+
+                    // Reload comments
+                    loadComments(currentCommentEntryId);
+                })
+                .catch((error) => {
+                    console.error('Error saving comment:', error);
+                    alert('Error saving comment. Please try again.');
+                });
+        }
+
+        // Load comments for an entry
+        function loadComments(entryId) {
+            if (!firebaseInitialized) {
+                document.getElementById('commentsList').innerHTML = '<p style="color: #888;">Comments require Firebase to be configured.</p>';
+                return;
+            }
+
+            const commentsRef = db.ref('comments/' + entryId);
+            commentsRef.once('value', (snapshot) => {
+                const comments = snapshot.val();
+                displayComments(comments);
+            });
+        }
+
+        // Display comments grouped by category
+        function displayComments(comments) {
+            const container = document.getElementById('commentsList');
+
+            if (!comments) {
+                container.innerHTML = '<p style="color: #888;">No comments yet. Be the first to comment!</p>';
+                return;
+            }
+
+            // Group comments by category
+            const grouped = {};
+            Object.entries(comments).forEach(([commentId, comment]) => {
+                // Hide resolved comments for non-admins
+                if (comment.resolved && !isAdmin) {
+                    return;
+                }
+
+                if (!grouped[comment.category]) {
+                    grouped[comment.category] = [];
+                }
+                grouped[comment.category].push({ id: commentId, ...comment });
+            });
+
+            // Sort comments by timestamp (newest first)
+            Object.keys(grouped).forEach(category => {
+                grouped[category].sort((a, b) => b.timestamp - a.timestamp);
+            });
+
+            // Render grouped comments
+            let html = '';
+            const categoryOrder = [
+                'General comment',
+                'Adjacent DCI',
+                'Example Phenomena',
+                'Category',
+                'Specific Category',
+                'Description',
+                'Safety'
+            ];
+
+            categoryOrder.forEach(category => {
+                if (grouped[category] && grouped[category].length > 0) {
+                    html += `<div class="comment-group">`;
+                    html += `<div class="comment-group-title">${category} (${grouped[category].length})</div>`;
+
+                    grouped[category].forEach(comment => {
+                        const date = new Date(comment.timestamp);
+                        const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+                        html += `
+                            <div class="comment-item ${comment.resolved ? 'comment-resolved' : ''}">
+                                <div class="comment-meta">
+                                    <span class="comment-category-tag">${comment.category}</span>
+                                    <span class="comment-timestamp">${dateStr}</span>
+                                </div>
+                                <div class="comment-text">${comment.text}</div>
+                                ${isAdmin ? `
+                                    <div class="comment-admin">
+                                        <input type="checkbox" id="resolve-${comment.id}"
+                                               ${comment.resolved ? 'checked' : ''}
+                                               onchange="toggleResolve('${currentCommentEntryId}', '${comment.id}', this.checked)">
+                                        <label for="resolve-${comment.id}">Resolved ${comment.resolved ? '✓' : ''}</label>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                }
+            });
+
+            if (html === '') {
+                container.innerHTML = '<p style="color: #888;">No comments yet. Be the first to comment!</p>';
+            } else {
+                container.innerHTML = html;
+            }
+        }
+
+        // Toggle comment resolved status
+        function toggleResolve(entryId, commentId, resolved) {
+            if (!isAdmin) {
+                alert('Only admins can resolve comments');
+                return;
+            }
+
+            if (!firebaseInitialized) {
+                alert('Firebase not configured');
+                return;
+            }
+
+            db.ref('comments/' + entryId + '/' + commentId + '/resolved').set(resolved)
+                .then(() => {
+                    console.log('Comment resolved status updated');
+                })
+                .catch((error) => {
+                    console.error('Error updating resolved status:', error);
+                    alert('Error updating comment. Please try again.');
+                });
+        }
+
+        // Close modal on outside click
+        document.getElementById('commentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCommentModal();
+            }
+        });
     </script>
 </body>
 </html>
