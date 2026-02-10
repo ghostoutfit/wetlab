@@ -815,6 +815,7 @@
         let filteredEntries = [];
         let globalUpvotes = {}; // Shared upvote counts from Firebase
         let myUpvotes = {}; // This user's upvotes (localStorage)
+        let commentCounts = {}; // Comment counts for each entry
 
         // Load this user's upvotes from localStorage
         function loadMyUpvotes() {
@@ -853,6 +854,34 @@
                 } else {
                     console.log('Firebase disconnected');
                 }
+            });
+        }
+
+        // Load comment counts for all entries
+        function loadCommentCounts() {
+            if (!firebaseInitialized) {
+                return;
+            }
+
+            const commentsRef = db.ref('comments');
+            commentsRef.on('value', (snapshot) => {
+                const allComments = snapshot.val() || {};
+                commentCounts = {};
+
+                // Count non-resolved comments for each entry
+                Object.keys(allComments).forEach(entryId => {
+                    const entryComments = allComments[entryId];
+                    let count = 0;
+                    Object.values(entryComments).forEach(comment => {
+                        if (!comment.resolved) {
+                            count++;
+                        }
+                    });
+                    commentCounts[entryId] = count;
+                });
+
+                console.log('Comment counts loaded:', Object.keys(commentCounts).length, 'entries with comments');
+                applyFilters(); // Re-render to update counts
             });
         }
 
@@ -1210,7 +1239,7 @@
                                 </div>
                             ` : ''}
                             <button class="comments-btn" onclick="openCommentModal('${entryId}', '${(entry['Description'] || 'Untitled').replace(/'/g, "\\'")}')">
-                                💬 Comments
+                                💬 Comments${commentCounts[entryId] ? ` (${commentCounts[entryId]})` : ''}
                             </button>
                         </div>
                     </div>
@@ -1238,6 +1267,7 @@
         // Initial load
         loadMyUpvotes();
         loadGlobalUpvotes();
+        loadCommentCounts();
         fetchData();
 
         // ===== COMMENTING SYSTEM =====
