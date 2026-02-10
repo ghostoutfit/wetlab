@@ -274,6 +274,19 @@
             letter-spacing: 0.5px;
         }
 
+        .entry-dci {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(255, 128, 0, 0.3), rgba(255, 100, 0, 0.3));
+            color: #ff8800;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 128, 0, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .entry-description {
             font-weight: 700;
             font-size: 22px;
@@ -281,6 +294,13 @@
             font-family: 'Rajdhani', sans-serif;
             line-height: 1.4;
             margin: 10px 0 5px 0;
+        }
+
+        .entry-phenomena {
+            font-size: 14px;
+            color: #ffffff;
+            margin-top: 8px;
+            font-style: italic;
         }
 
         .entry-video-container {
@@ -1205,8 +1225,10 @@
                                     `<span class="entry-category">${cat}</span>`
                                 ).join('')}
                                 ${entry['Specific'] ? `<span class="entry-specific">${entry['Specific']}</span>` : ''}
+                                ${entry['Adjacent DCI'] ? `<span class="entry-dci">${entry['Adjacent DCI']}</span>` : ''}
                             </div>
                             <div class="entry-description">${entry['Description'] || 'Untitled'}</div>
+                            ${entry['Example Phenomena'] ? `<div class="entry-phenomena">Phenomena: ${entry['Example Phenomena']}</div>` : ''}
                         </div>
 
                         ${videoId || entryId ? `
